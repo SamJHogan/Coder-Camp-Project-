@@ -1,0 +1,56 @@
+<!Doctype html>
+<html>
+    <head>
+      <title>Stripe Checkout Integration</title>
+      <link rel="stylesheet" href="index.css" type="text/css">
+      <script src="https://checkout.stripe.com/checkout.js"></script>
+    </head>
+
+    <body>
+        <div>
+            <ul>
+                <li><a href="home">Home</a></li>
+                <li><a href="about us">About Us</a></li>
+                <li><a href="menu">Menu</a></li>
+                <li><a href="contact">Contact</a></li>
+            </ul>
+        </div>
+        <div class="check">
+      <h2> Customer Checkout</h2>
+  
+      <div id="shop">
+        <button id="buttonCheckout">Checkout</button>
+      </div>
+      </div>
+      
+    <script>
+        var checkoutHandler = StripeCheckout.configure({
+  key: "pk_test_6pRNASCoBOKtIshFeQd4XMUh",
+  locale: "auto"
+});
+
+var button = document.getElementById("buttonCheckout");
+button.addEventListener("click", function(ev) {
+  checkoutHandler.open({
+    name: "Sample Store",
+    description: "Example Purchase",
+    token: handleToken
+  });
+});
+
+function handleToken(token) {
+  fetch("/charge", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(token)
+  })
+  .then(output => {
+    if (output.status === "succeeded")
+      document.getElementById("shop").innerHTML = "<p>Purchase complete!</p>";
+  })
+}
+
+    </script>
+    </body>
+
+  </html>
